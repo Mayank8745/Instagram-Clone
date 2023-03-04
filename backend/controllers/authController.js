@@ -2,7 +2,10 @@ const util = require("util");
 const bcrypt = require("bcrypt");
 
 const dbConnection = require("../databaseConnection/dbConnection");
-const { dbQuery } = require("../databaseConnection/database_query");
+const {
+  dbQuery,
+  convertSqlToJSON,
+} = require("../databaseConnection/database_query");
 
 const queryProcess = util.promisify(dbConnection.query).bind(dbConnection);
 
@@ -11,7 +14,7 @@ exports.loginController = async (req, res) => {
     const { email, password } = req.body;
     const query = dbQuery.fetchUser + `"${email}";`;
 
-    const data = await queryProcess(query);
+    var data = await queryProcess(query);
 
     if (
       data[0] == undefined ||
@@ -22,8 +25,11 @@ exports.loginController = async (req, res) => {
       });
     }
 
+    data = convertSqlToJSON(data);
+
     return res.json({
       message: "Logged In SuccessFully",
+      data,
     });
   } catch (err) {
     console.error(err);
