@@ -2,17 +2,18 @@ const util = require("util");
 const bcrypt = require("bcrypt");
 
 const dbConnection = require("../databaseConnection/dbConnection");
-const dbQuery = require("../databaseConnection/database_query");
+const { dbQuery } = require("../databaseConnection/database_query");
 
-const query = util.promisify(dbConnection.query).bind(dbConnection);
+const queryProcess = util.promisify(dbConnection.query).bind(dbConnection);
 
 exports.loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const qury = dbQuery.fetchUser + `"${email}";`;
-    console.log(qury);
+    const query = dbQuery.fetchUser + `"${email}";`;
+    console.log(query);
 
-    const data = await query(qury);
+    const data = await queryProcess(query);
+    console.log(data);
 
     if (!(await bcrypt.compare(password, data[0].password))) {
       return res.json({
@@ -32,7 +33,16 @@ exports.loginController = async (req, res) => {
 exports.signupController = async (req, res) => {
   try {
     const { userName, email, password } = req.body;
-    const allUser = await query(`SELECT * FROM USERS WHERE email="${email}";`);
+    var query = dbQuery.fetchUser + `"${email}";`;
+    var allUser = await queryProcess(query);
+    if (!allUser) {
+      return res.json({
+        message: "Account Already exists",
+      });
+    }
+
+    query = dbQuery.fetchUserName + `"${userName}";`;
+    allUser = await queryProcess(query);
     if (!allUser) {
       return res.json({
         message: "Account Already exists",
@@ -40,8 +50,8 @@ exports.signupController = async (req, res) => {
     }
 
     const passwordUpdate = await bcrypt.hash(password, 12);
-    const qury = dbQuery.insertUser;
-    const user = await query(qury, [userName, email, passwordUpdate]);
+    query = dbQuery.insertUser;
+    const user = await queryProcess(query, [userName, email, passwordUpdate]);
     return res.json({
       message: "User Account Created successfully",
     });

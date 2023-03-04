@@ -114,3 +114,12 @@ exports.getAllPost = async (req, res) => {
     return;
   }
 };
+
+exports.likePost = async (req, res) => {
+  try {
+    const likeQuery = dbQuery.InsertLike;
+  } catch (err) {
+    console.error(err);
+    return;
+  }
+};
