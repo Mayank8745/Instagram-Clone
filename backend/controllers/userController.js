@@ -7,9 +7,16 @@ const {
 const queryProcess = util.promisify(dbConnection.query).bind(dbConnection);
 const uploadPath = "uploads/images/";
 
+const fileNameChange = (file) => {
+  const whitespaceRegExp = / /g;
+  const change = file.replace(whitespaceRegExp, "_");
+  return change;
+};
+
 const singleUploadFile = async (file, user_id, post_id) => {
   try {
-    const filename = user_id + "_" + post_id + "_" + file.name;
+    const file_name = fileNameChange(file.name);
+    const filename = user_id + "_" + post_id + "_" + file_name;
 
     file.mv(uploadPath + filename, async (err) => {
       if (err) {
@@ -20,7 +27,7 @@ const singleUploadFile = async (file, user_id, post_id) => {
       const newImage = await queryProcess(query, [
         user_id,
         post_id,
-        file.name,
+        file_name,
         uploadPath + filename,
       ]);
       return;
@@ -34,7 +41,8 @@ const singleUploadFile = async (file, user_id, post_id) => {
 const multiFileUpload = async (files, user_id, post_id) => {
   try {
     files.map((file) => {
-      const filename = user_id + "_" + post_id + "_" + file.name;
+      const file_name = fileNameChange(file.name);
+      const filename = user_id + "_" + post_id + "_" + file_name;
       file.mv(uploadPath + filename, async (err) => {
         if (err) {
           throw err;
@@ -43,7 +51,7 @@ const multiFileUpload = async (files, user_id, post_id) => {
         const newImage = await queryProcess(query, [
           user_id,
           post_id,
-          file.name,
+          file_name,
           uploadPath + filename,
         ]);
       });
