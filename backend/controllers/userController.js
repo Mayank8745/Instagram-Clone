@@ -95,10 +95,17 @@ exports.getAllPost = async (req, res) => {
     var imageData = await queryProcess(imageQuery);
     imageData = convertSqlToJSON(imageData);
 
-    console.log(imageData);
-
     var finalResult = [];
 
+    postdata.map((post) => {
+      if (post.image_count > 0) {
+        var imagesPresent = imageData.filter((data) => {
+          return post.id == data.post_id;
+        });
+        post["imagesData"] = imagesPresent;
+      }
+      finalResult.push(post);
+    });
     return res.json({
       finalResult,
     });
