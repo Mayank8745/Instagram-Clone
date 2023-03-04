@@ -2,7 +2,7 @@ const util = require("util");
 const dbConnection = require("../databaseConnection/dbConnection");
 const dbQuery = require("../databaseConnection/database_query");
 const queryProcess = util.promisify(dbConnection.query).bind(dbConnection);
-const uploadPath = "/uploads/images/";
+const uploadPath = "uploads/images/";
 
 const singleUploadFile = async (file, user_id, post_id) => {
   try {
@@ -24,6 +24,28 @@ const singleUploadFile = async (file, user_id, post_id) => {
   } catch (err) {
     console.error(err);
     return l;
+  }
+};
+
+const multiFileUpload = async (files, user_id, post_id) => {
+  try {
+    files.map((file) => {
+      const filename = user_id + "_" + post_id + "_" + file.name;
+      file.mv(uploadPath + filename, async (err) => {
+        if (err) {
+          throw err;
+        }
+        const query = dbQuery.InsertImage;
+        const newImage = await queryProcess(query, [
+          user_id,
+          post_id,
+          uploadPath + filename,
+        ]);
+      });
+    });
+  } catch (err) {
+    console.error(err);
+    return;
   }
 };
 
@@ -50,6 +72,7 @@ exports.createPost = async (req, res) => {
     const query = dbQuery.InsertPost;
     const newPost = await queryProcess(query, [user_id, caption, image_count]);
     if (req.files !== null && req.files.images.length > 1) {
+      await multiFileUpload(req.files.images, user_id, newPost.insertId);
     } else if (req.files !== null && typeof req.files.images == "object") {
       await singleUploadFile(req.files.images, user_id, newPost.insertId);
     }
