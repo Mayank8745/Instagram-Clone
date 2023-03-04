@@ -10,12 +10,13 @@ exports.loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
     const query = dbQuery.fetchUser + `"${email}";`;
-    console.log(query);
 
     const data = await queryProcess(query);
-    console.log(data);
 
-    if (!(await bcrypt.compare(password, data[0].password))) {
+    if (
+      data[0] == undefined ||
+      !(await bcrypt.compare(password, data[0].password))
+    ) {
       return res.json({
         message: "Incorrect UserName and Password",
       });
