@@ -4,7 +4,6 @@ const {
   dbQuery,
   convertSqlToJSON,
 } = require("../databaseConnection/database_query");
-const { query } = require("express");
 const queryProcess = util.promisify(dbConnection.query).bind(dbConnection);
 const uploadPath = "uploads/images/";
 
@@ -96,6 +95,10 @@ exports.getAllPost = async (req, res) => {
     var imageData = await queryProcess(imageQuery);
     imageData = convertSqlToJSON(imageData);
 
+    const likeQuery = dbQuery.getAllLikes;
+    var likeData = await queryProcess(likeQuery);
+    likeData = convertSqlToJSON(likeData);
+
     var finalResult = [];
 
     postdata.map((post) => {
@@ -105,6 +108,15 @@ exports.getAllPost = async (req, res) => {
         });
         post["imagesData"] = imagesPresent;
       }
+
+      var likePresent = likeData.filter((data) => {
+        return post.id == data.post_id && post.user_id == data.user_id;
+      });
+
+      if (likePresent.length > 0) {
+        post["likeData"] = likePresent;
+      }
+
       finalResult.push(post);
     });
     return res.json({
@@ -142,5 +154,3 @@ exports.likePost = async (req, res) => {
     return;
   }
 };
-
-const dislikePost = (user_id, post_id) => {};
