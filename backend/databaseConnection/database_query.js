@@ -1,7 +1,7 @@
 const dbQuery = {
   insertUser: `INSERT INTO USERS VALUES(NULL, ?, ?, ?, NOW());`,
   InsertPost: "INSERT INTO POST VALUES(NULL, ?, ?, ?)",
-  InsertImage: "INSERT INTO photos VALUES(NULL, ?, ?, ?)",
+  InsertImage: "INSERT INTO photos VALUES(NULL, ?, ?, ?, ?)",
   InsertLike: "INSERT INTO LIKEPOST VALUES(NULL, ?, ?)",
   dislikePost: `delete from LIKEPOST where user_id = `,
 

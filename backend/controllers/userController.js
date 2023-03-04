@@ -20,6 +20,7 @@ const singleUploadFile = async (file, user_id, post_id) => {
       const newImage = await queryProcess(query, [
         user_id,
         post_id,
+        file.name,
         uploadPath + filename,
       ]);
       return;
@@ -42,6 +43,7 @@ const multiFileUpload = async (files, user_id, post_id) => {
         const newImage = await queryProcess(query, [
           user_id,
           post_id,
+          file.name,
           uploadPath + filename,
         ]);
       });
