@@ -3,7 +3,9 @@ const dbQuery = {
   InsertPost: "INSERT INTO POST VALUES(NULL, ?, ?, ?)",
   InsertImage: "INSERT INTO photos VALUES(NULL, ?, ?, ?)",
   InsertLike: "INSERT INTO LIKEPOST VALUES(NULL, ?, ?)",
+  dislikePost: `delete from LIKEPOST where user_id = `,
 
+  checkLike: "SELECT * FROM LIKEPOST where user_id = ",
   fetchUserName: `SELECT * FROM USERS WHERE userName=`,
   fetchUser: `SELECT * FROM USERS WHERE email=`,
   fetchImage: "SELECT * FROM photos;",

@@ -4,6 +4,7 @@ const {
   dbQuery,
   convertSqlToJSON,
 } = require("../databaseConnection/database_query");
+const { query } = require("express");
 const queryProcess = util.promisify(dbConnection.query).bind(dbConnection);
 const uploadPath = "uploads/images/";
 
@@ -117,9 +118,29 @@ exports.getAllPost = async (req, res) => {
 
 exports.likePost = async (req, res) => {
   try {
-    const likeQuery = dbQuery.InsertLike;
+    const { userId, postId } = req.params;
+
+    var query = dbQuery.checkLike + `${userId}` + ` and post_id = ${postId}`;
+
+    var data = await queryProcess(query, [userId, postId]);
+
+    if (data[0] !== undefined) {
+      query = dbQuery.dislikePost + `${userId}` + ` and post_id = ${postId}`;
+      data = await queryProcess(query);
+      return res.json({
+        message: "Dislike post",
+      });
+    }
+
+    query = dbQuery.InsertLike;
+    data = await queryProcess(query, [userId, postId]);
+    return res.json({
+      message: "Like for the Post is Created",
+    });
   } catch (err) {
     console.error(err);
     return;
   }
 };
+
+const dislikePost = (user_id, post_id) => {};
