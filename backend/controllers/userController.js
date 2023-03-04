@@ -1,6 +1,9 @@
 const util = require("util");
 const dbConnection = require("../databaseConnection/dbConnection");
-const dbQuery = require("../databaseConnection/database_query");
+const {
+  dbQuery,
+  convertSqlToJSON,
+} = require("../databaseConnection/database_query");
 const queryProcess = util.promisify(dbConnection.query).bind(dbConnection);
 const uploadPath = "uploads/images/";
 
@@ -80,4 +83,27 @@ exports.createPost = async (req, res) => {
       message: "Post Created Successfully",
     });
   } catch (err) {}
+};
+
+exports.getAllPost = async (req, res) => {
+  try {
+    const postQuery = dbQuery.getAllPost;
+    var postdata = await queryProcess(postQuery);
+    postdata = convertSqlToJSON(postdata);
+
+    const imageQuery = dbQuery.fetchImage;
+    var imageData = await queryProcess(imageQuery);
+    imageData = convertSqlToJSON(imageData);
+
+    console.log(imageData);
+
+    var finalResult = [];
+
+    return res.json({
+      finalResult,
+    });
+  } catch (err) {
+    console.error(err);
+    return;
+  }
 };
