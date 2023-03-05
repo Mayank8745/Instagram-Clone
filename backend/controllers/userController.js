@@ -129,6 +129,9 @@ exports.getAllPost = async (req, res) => {
 
       if (likePresent.length > 0) {
         post["likeData"] = likePresent;
+        post["like_count"] = likePresent.length;
+      } else {
+        post["like_count"] = 0;
       }
 
       finalResult.push(post);
