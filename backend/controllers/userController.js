@@ -64,9 +64,11 @@ const multiFileUpload = async (files, user_id, post_id) => {
 
 exports.createPost = async (req, res) => {
   try {
+    console.log(req.body);
+    console.log(req.files);
     var images;
     if (req.files !== null) {
-      images = req.files["images[]"];
+      images = req.files["images[]"] || req.files["images"];
     }
     var caption;
     if (req.body == undefined) {
@@ -85,6 +87,7 @@ exports.createPost = async (req, res) => {
     } else {
       image_count = 1;
     }
+    console.log("YES");
 
     const query = dbQuery.InsertPost;
     const newPost = await queryProcess(query, [user_id, caption, image_count]);
@@ -93,10 +96,13 @@ exports.createPost = async (req, res) => {
     } else if (req.files !== null && typeof images == "object") {
       await singleUploadFile(images, user_id, newPost.insertId);
     }
+    console.log("YES");
     return res.status(200).json({
       message: "Post Created Successfully",
     });
-  } catch (err) {}
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 exports.getAllPost = async (req, res) => {
