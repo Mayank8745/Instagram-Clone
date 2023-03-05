@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(fileupload());
 app.use(cors());
-app.use(express.static("/uploads"));
+app.use("/uploads/images", express.static("./uploads/images"));
 
 if (process.env.DEVELOPMENT == "development") {
   app.use(morgan("dev"));
