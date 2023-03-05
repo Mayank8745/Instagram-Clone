@@ -4,6 +4,7 @@ dotenv.config({ path: "./config.env" });
 
 const express = require("express");
 const morgan = require("morgan");
+const cors = require("cors");
 var fileupload = require("express-fileupload");
 
 const app = express();
@@ -11,6 +12,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(fileupload());
+app.use(cors());
 app.use(express.static("/uploads"));
 
 if (process.env.DEVELOPMENT == "development") {
