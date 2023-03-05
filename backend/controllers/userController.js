@@ -89,7 +89,7 @@ exports.createPost = async (req, res) => {
     } else if (req.files !== null && typeof req.files.images == "object") {
       await singleUploadFile(req.files.images, user_id, newPost.insertId);
     }
-    return res.json({
+    return res.status(200).json({
       message: "Post Created Successfully",
     });
   } catch (err) {}
@@ -129,7 +129,7 @@ exports.getAllPost = async (req, res) => {
 
       finalResult.push(post);
     });
-    return res.json({
+    return res.status(200).json({
       finalResult,
     });
   } catch (err) {
@@ -149,14 +149,14 @@ exports.likePost = async (req, res) => {
     if (data[0] !== undefined) {
       query = dbQuery.dislikePost + `${userId}` + ` and post_id = ${postId}`;
       data = await queryProcess(query);
-      return res.json({
+      return res.status(200).json({
         message: "Dislike post",
       });
     }
 
     query = dbQuery.InsertLike;
     data = await queryProcess(query, [userId, postId]);
-    return res.json({
+    return res.status(200).json({
       message: "Like for the Post is Created",
     });
   } catch (err) {
