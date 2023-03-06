@@ -16,7 +16,7 @@ Node.js installed on your Local Computer
 ### Clone the project
 
 ```bash
-  $ git clone https://link-to-project
+  $ git clone https://github.com/Mayank8745/Instagram-Clone.git
 ```
 
 ### For Backend
